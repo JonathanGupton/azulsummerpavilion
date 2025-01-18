@@ -5,6 +5,8 @@ from abc import abstractmethod
 from collections import deque
 from typing import Sequence
 
+import numpy as np
+
 from azulsummerpavilion.library.tiles import Tiles
 from azulsummerpavilion.library.tile_array import TileArray
 
@@ -37,7 +39,7 @@ class DeterministicInterface(RandomInterface):
         self.draws.extend(draws)
 
 
-class SeededInterface(RandomInterface):
+class SeededRandomInterface(RandomInterface):
     """
     The SeededInterface accepts a seed value for the RNG in order to have reproducible
     bag draws.
@@ -45,17 +47,26 @@ class SeededInterface(RandomInterface):
 
     def __init__(self, seed: int) -> None:
         self.seed = seed
+        self.rng: np.random.Generator = np.random.default_rng(seed=seed)
 
     def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
-        pass
+        return TileArray(
+            self.rng.multivariate_hypergeometric(tiles, draw_count).astype("B")
+        )
 
 
 class DefaultRandomInterface(RandomInterface):
     """
     The DefaultRandomInterface is the default value used by the GameManager for
     drawing tiles from the bag.  This does not accept a seed for the RNG and will return
-    whatever is randomly provided without user interference.
+    whatever is randomly provided without user input.
     """
 
+    def __init__(self):
+        self.rng: np.random.Generator = np.random.default_rng()
+        self.seed = self.rng.bit_generator.state["state"]["ke"]
+
     def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
-        pass
+        return TileArray(
+            self.rng.multivariate_hypergeometric(tiles, draw_count).astype("B")
+        )
