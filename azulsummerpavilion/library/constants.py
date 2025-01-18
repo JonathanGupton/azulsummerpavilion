@@ -10,6 +10,12 @@ from functools import total_ordering
 # Ratio of Number of players : Number of factory displays
 PLAYER_TO_DISPLAY_RATIO: dict[int, int] = {2: 5, 3: 7, 4: 9}
 
+# Each player starts with a score of 5
+INITIAL_PLAYER_SCORE = 5
+
+# Number of supply spaces that receive a tile
+SUPPLY_SPACE_COUNT = 10
+
 
 @unique
 class TileColor(IntEnum):
