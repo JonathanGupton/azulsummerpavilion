@@ -5,7 +5,7 @@ class Score(np.ndarray):
     """Base class for player scores
 
     Score is a subclassed np.ndarray with a length of the number of players
-    (n_players).  Score is initialized to the start value of 5 points per
+    (n_players).  Score is initialized to the start value of 0 points per
     player.
     """
 
