@@ -5,6 +5,7 @@ from dataclasses import field
 from azulsummerpavilion.library.logic import game_logic
 from azulsummerpavilion.library.player_interface import PlayerInterface
 from azulsummerpavilion.library.queue import MessageDequeue
+from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.random_interface import RandomInterface
 from azulsummerpavilion.library.state import AzulSummerPavilionState as State
 
@@ -13,9 +14,9 @@ from azulsummerpavilion.library.state import AzulSummerPavilionState as State
 class AzulSummerPavilionGame:
     players: tuple[PlayerInterface]
     random: RandomInterface
+    events: MessageQueue
+    actions: MessageQueue
     state: Optional[State] = None
-    events: MessageDequeue = field(default_factory=MessageDequeue)
-    actions: MessageDequeue = field(default_factory=MessageDequeue)
 
 
 class GameManager:
