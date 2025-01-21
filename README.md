@@ -1,0 +1,1 @@
+This is a work in progress implementation of the board game Azul Summer Pavilion.
