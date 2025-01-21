@@ -64,7 +64,7 @@ class DefaultRandomInterface(RandomInterface):
 
     def __init__(self):
         self.rng: np.random.Generator = np.random.default_rng()
-        self.seed = self.rng.bit_generator.state["state"]["ke"]
+        self.seed = self.rng.bit_generator.state["state"]["key"]
 
     def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
         return TileArray(
