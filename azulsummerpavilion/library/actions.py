@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from azulsummerpavilion.library.constants import Bag
 from azulsummerpavilion.library.constants import Phase
 from azulsummerpavilion.library.constants import TileColor
 from azulsummerpavilion.library.constants import StarColor
@@ -49,6 +50,8 @@ class SelectTilesToDrawFromBag(Action):
     """Command to select tiles to be drawn from the bag (this command does not draw the tiles)"""
 
     draw_count: int
+    target: TileTarget
+    source: TileTarget = Bag()
 
 
 @dataclass
