@@ -1,6 +1,8 @@
 """Module containing the named values for Azul Summer Pavilion."""
 
 from __future__ import annotations
+
+from dataclasses import dataclass
 from enum import Enum
 from enum import IntEnum
 from enum import unique
@@ -15,6 +17,9 @@ INITIAL_PLAYER_SCORE = 5
 
 # Number of supply spaces that receive a tile
 SUPPLY_SPACE_COUNT = 10
+
+# Number of tiles drawn to each factory display
+FACTORY_SPACE_DRAW = 4
 
 
 @unique
@@ -86,14 +91,39 @@ class TileIndex(IntEnum):
     FactoryDisplay = 4
 
 
-class TileTarget(Enum):
-    Bag = "Bag"
-    Tower = "Tower"
-    TableCenter = "Table Center"
-    Supply = "Supply"
-    FactoryDisplay = "Factory Display"
-    PlayerBoard = "Player Board"
-    PlayerReserve = "Player Reserve"
+class TileTarget:
+    pass
+
+
+class Bag(TileTarget):
+    pass
+
+
+class Tower(TileTarget):
+    pass
+
+
+class TableCenter(TileTarget):
+    pass
+
+
+class Supply(TileTarget):
+    pass
+
+
+@dataclass
+class FactoryDisplay(TileTarget):
+    display_index: int
+
+
+@dataclass
+class PlayerBoard(TileTarget):
+    player_index: int
+
+
+@dataclass
+class PlayerReserve(TileTarget):
+    player_index: int
 
 
 # The point value for completing a star at the end of the game
