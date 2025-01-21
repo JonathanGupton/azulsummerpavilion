@@ -1,12 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from azulsummerpavilion.library.constants import Bag
+from azulsummerpavilion.library.constants import Color
 from azulsummerpavilion.library.constants import Phase
-from azulsummerpavilion.library.constants import TileColor
 from azulsummerpavilion.library.constants import StarColor
 from azulsummerpavilion.library.constants import TileTarget
-from azulsummerpavilion.library.state import AzulSummerPavilionState as State
 from azulsummerpavilion.library.tile_array import TileArray
 
 
@@ -33,12 +31,20 @@ class NewGame(Action):
 class SetRoundAndWildColor(Action):
     """Command to set the round number and the wild color"""
 
-    round: int
+    game_round: int
+    wild_color: Color
+
+
+@dataclass
+class MakeTileSelection(Action):
+    tile_count: int
+    source: TileTarget
+    target: TileTarget
 
 
 @dataclass()
 class DistributeTiles(Action):
-    """Command to distribute tiles from the bag"""
+    """Command to distribute tiles"""
 
     tiles: TileArray
     source: TileTarget
@@ -55,41 +61,10 @@ class SelectTilesToDrawFromBag(Action):
 
 
 @dataclass
-class DistributeTilesToSupply(Action):
-    """Command to move tiles from the bag to the supply spaces"""
-
-    tiles: TileArray
-
-
-@dataclass
-class DistributeTilesToFactoryDisplays(Action):
-
-    tile_count: int
-    factory_display: int
-
-
-@dataclass
 class SetGamePhase(Action):
     """Set the game phase."""
 
     phase: Phase
-
-
-@dataclass
-class PickTilesFromFactoryDisplay(Action):
-    """Pick the tile(s) from the Factory Display"""
-
-    factory_display: int
-    tile: TileColor
-    player: int
-
-
-@dataclass
-class PickTilesFromTableCenter(Action):
-    """Pick the tile(s) from the Table Center"""
-
-    tile: TileColor
-    player: int
 
 
 @dataclass
@@ -160,10 +135,3 @@ class FillSupplySpaces(Action):
 @dataclass
 class FillFactoryDisplaySpaces(Action):
     pass
-
-
-@dataclass
-class MakeTileSelection(Action):
-    tile_count: int
-    source: TileTarget
-    target: TileTarget
