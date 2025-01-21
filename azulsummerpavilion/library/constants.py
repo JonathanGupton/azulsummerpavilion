@@ -8,7 +8,6 @@ from enum import IntEnum
 from enum import unique
 from functools import total_ordering
 
-
 # Ratio of Number of players : Number of factory displays
 PLAYER_TO_DISPLAY_RATIO: dict[int, int] = {2: 5, 3: 7, 4: 9}
 
@@ -48,18 +47,6 @@ class StarColor(IntEnum):
 
 
 @unique
-class WildTiles(IntEnum):
-    """Wild tiles in round order"""
-
-    Purple = 0
-    Green = 1
-    Orange = 2
-    Yellow = 3
-    Blue = 4
-    Red = 5
-
-
-@unique
 @total_ordering
 class Phase(Enum):
     """Enum representing each phase in a round"""
@@ -79,6 +66,34 @@ class Phase(Enum):
         if not isinstance(other, Phase):
             return NotImplemented
         return self._order[self.name] < self._order[other.name]
+
+
+class Color:
+    pass
+
+
+class Purple(Color):
+    pass
+
+
+class Green(Color):
+    pass
+
+
+class Orange(Color):
+    pass
+
+
+class Yellow(Color):
+    pass
+
+
+class Blue(Color):
+    pass
+
+
+class Red(Color):
+    pass
 
 
 class TileIndex(IntEnum):
