@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from azulsummerpavilion.library.board import Board
+from azulsummerpavilion.library.constants import Color
 from azulsummerpavilion.library.constants import Phase
 from azulsummerpavilion.library.score import Score
 from azulsummerpavilion.library.tiles import Tiles
@@ -14,6 +15,8 @@ class AzulSummerPavilionState:
     score: Score
     boards: list[Board]
     phase: Optional[Phase] = None
+    round: Optional[int] = None
+    wild_color: Optional[Color] = None
     initializing: Optional[bool] = None
 
     @classmethod
