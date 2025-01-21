@@ -8,8 +8,14 @@ from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import UpdatePlayerScore
 from azulsummerpavilion.library.actions import SelectTilesToDrawFromBag
 from azulsummerpavilion.library.actions import DistributeTilesToSupply
+from azulsummerpavilion.library.constants import FACTORY_SPACE_DRAW
 from azulsummerpavilion.library.constants import PLAYER_TO_DISPLAY_RATIO
 from azulsummerpavilion.library.constants import Phase
+from azulsummerpavilion.library.constants import PlayerBoard
+from azulsummerpavilion.library.constants import TileTarget
+from azulsummerpavilion.library.constants import Supply
+from azulsummerpavilion.library.constants import FactoryDisplay
+from azulsummerpavilion.library.constants import PlayerReserve
 from azulsummerpavilion.library.constants import INITIAL_PLAYER_SCORE
 from azulsummerpavilion.library.constants import SUPPLY_SPACE_COUNT
 from azulsummerpavilion.library.events import Event
@@ -20,27 +26,8 @@ from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.state import AzulSummerPavilionState as State
 
 
-def process_phase_one_action(action: Action, state: State) -> list[Event | None]:
-    events = []
-    return events
-
-
-def process_phase_two_action(action: Action, state: State) -> list[Event | None]:
-    events = []
-    return events
-
-
-def process_phase_three_action(action: Action, state: State) -> list[Event | None]:
-    events = []
-    return events
-
-
-def initialize_game(number_of_players: int) -> State:
-    pass
-
-
 def game_logic(
-    action: Action, state: State | None, actions: MessageQueue, events: MessageQueue
+    action: Action, state: State | None, aq: MessageQueue, eq: MessageQueue
 ) -> (State, MessageQueue, MessageQueue):
     """
     The core game logic to process each tic of the game.
@@ -54,23 +41,35 @@ def game_logic(
     match action:
 
         case NewGame(number_of_players=number_of_players):
-            actions.append(SetGamePhase(Phase.acquire_tile))
+            aq.append(SetGamePhase(Phase.acquire_tile))
             for player in range(number_of_players):
-                actions.append(UpdatePlayerScore(player, INITIAL_PLAYER_SCORE))
-            actions.append(FillSupplySpaces())
+                aq.append(UpdatePlayerScore(player, INITIAL_PLAYER_SCORE))
+            aq.append(FillSupplySpaces())  # Handled by GM
+
+        case FillSupplySpaces():
+            aq.appendleft(
+                SelectTilesToDrawFromBag(draw_count=SUPPLY_SPACE_COUNT, target=Supply())
+            )
 
         case DistributeTilesToSupply():
-            # do the distribution
-            actions.append(FillFactoryDisplaySpaces())
+            # TODO:  do the distribution
+            aq.append(FillFactoryDisplaySpaces())
 
         case FillFactoryDisplaySpaces():
-            for display in range(PLAYER_TO_DISPLAY_RATIO[state.player_count]):
-                actions.append()  # specifically target each supply space draw action
-            actions.append(CompleteInitialization())
+            for display_index in reversed(
+                range(PLAYER_TO_DISPLAY_RATIO[state.player_count])
+            ):
+                aq.append(
+                    SelectTilesToDrawFromBag(
+                        draw_count=FACTORY_SPACE_DRAW,
+                        target=FactoryDisplay(display_index),
+                    )
+                )
+            aq.append(CompleteInitialization())
 
         case UpdatePlayerScore(player=player, score=score):
             state.score.update(player, score)
-            events.append(
+            eq.append(
                 PlayerScoreUpdated(
                     player=player,
                     change=score,
@@ -80,12 +79,12 @@ def game_logic(
 
         case CompleteInitialization():
             state.initializing = False
-            actions.append(DoPlayerTurn())
+            aq.append(DoPlayerTurn())
 
         case SetGamePhase(phase=phase):
             state.phase = phase
-            events.append(GamePhaseSet(phase))
+            eq.append(GamePhaseSet(phase))
 
         case _:
             pass
-    return state, actions, events
+    return state, aq, eq
