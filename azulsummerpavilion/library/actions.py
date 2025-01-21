@@ -160,3 +160,10 @@ class FillSupplySpaces(Action):
 @dataclass
 class FillFactoryDisplaySpaces(Action):
     pass
+
+
+@dataclass
+class MakeTileSelection(Action):
+    tile_count: int
+    source: TileTarget
+    target: TileTarget
