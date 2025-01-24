@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from azulsummerpavilion.library.board import Board
-from azulsummerpavilion.library.constants import Color
+from azulsummerpavilion.library.color import Color
 from azulsummerpavilion.library.constants import Phase
 from azulsummerpavilion.library.score import Score
 from azulsummerpavilion.library.tiles import Tiles
