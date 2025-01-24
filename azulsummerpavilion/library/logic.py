@@ -1,9 +1,10 @@
 from azulsummerpavilion.library.actions import Action
-from azulsummerpavilion.library.actions import CompleteInitialization
+from azulsummerpavilion.library.actions import AdvancePhase
 from azulsummerpavilion.library.actions import DistributeTiles
 from azulsummerpavilion.library.actions import DoPlayerTurn
 from azulsummerpavilion.library.actions import FillFactoryDisplaySpaces
 from azulsummerpavilion.library.actions import FillSupplySpaces
+from azulsummerpavilion.library.actions import MakePlayerTileSelection
 from azulsummerpavilion.library.actions import MakeTileSelection
 from azulsummerpavilion.library.actions import NewGame
 from azulsummerpavilion.library.actions import SetGamePhase
@@ -15,6 +16,7 @@ from azulsummerpavilion.library.constants import FactoryDisplay
 from azulsummerpavilion.library.constants import INITIAL_PLAYER_SCORE
 from azulsummerpavilion.library.constants import PLAYER_TO_DISPLAY_RATIO
 from azulsummerpavilion.library.constants import Phase
+from azulsummerpavilion.library.constants import PlayerReserve
 from azulsummerpavilion.library.constants import Purple
 from azulsummerpavilion.library.constants import SUPPLY_SPACE_COUNT
 from azulsummerpavilion.library.constants import Supply
@@ -22,6 +24,8 @@ from azulsummerpavilion.library.events import GamePhaseSet
 from azulsummerpavilion.library.events import PlayerScoreUpdated
 from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.state import AzulSummerPavilionState as State
+from azulsummerpavilion.library.tiles import factory_displays_are_empty
+from azulsummerpavilion.library.tiles import table_center_is_empty
 
 
 def game_logic(
@@ -62,7 +66,7 @@ def game_logic(
                         target=FactoryDisplay(display_index),
                     )
                 )
-            aq.append(CompleteInitialization())
+            aq.append(DoPlayerTurn())
 
         case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
             target, Supply
@@ -76,6 +80,18 @@ def game_logic(
         ):
             display_index = target.display_index
 
+        case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
+            target, PlayerReserve
+        ) and isinstance(source, FactoryDisplay):
+            # TODO: Implement draw to player reserve from factory display
+            pass
+
+        case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
+            target, PlayerReserve
+        ) and isinstance(source, Supply):
+            # TODO: Implement draw to player reserve from supply
+            pass
+
         case UpdatePlayerScore(player=player, score=score):
             state.score.update(player, score)
             eq.append(
@@ -86,10 +102,6 @@ def game_logic(
                 )
             )
 
-        case CompleteInitialization():
-            state.initializing = False
-            aq.append(DoPlayerTurn())
-
         case SetGamePhase(phase=phase):
             state.phase = phase
             eq.append(GamePhaseSet(phase))
@@ -97,6 +109,38 @@ def game_logic(
         case SetRoundAndWildColor(game_round=game_round, wild_color=wild_color):
             state.round = game_round
             state.wild_color = wild_color
+
+        case DoPlayerTurn() if all(
+            (
+                state.phase == Phase.acquire_tile,
+                table_center_is_empty(state.tiles),
+                factory_displays_are_empty(state.tiles),
+            )
+        ):
+            aq.append(AdvancePhase())
+
+        case DoPlayerTurn() if state.phase == Phase.acquire_tile and any(
+            (
+                not table_center_is_empty(state.tiles),
+                not factory_displays_are_empty(state.tiles),
+            )
+        ):
+            aq.append(MakePlayerTileSelection())
+
+        case MakePlayerTileSelection():
+            pass
+
+        case AdvancePhase() if state.phase == Phase.acquire_tile:
+            # TODO:  Implement advance to play tiles
+            pass
+
+        case AdvancePhase() if state.phase == Phase.play_tiles:
+            # TODO:  Implement advance to prepare_next_round or EndGame()
+            pass
+
+        case AdvancePhase() if state.phase == Phase.prepare_next_round:
+            # TODO:  Implement advance to acquire_tile
+            pass
 
         case _:
             pass
