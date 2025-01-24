@@ -376,3 +376,15 @@ class Tiles:
 
     def color_is_played_in_wild_star(self, player: int, color: TileColor) -> bool:
         return self.view_player_board_n(player)[StarColor.Wild][color]
+
+
+def table_center_is_empty(tiles: Tiles) -> bool:
+    """Returns True if the table center is empty"""
+    # TODO:  Implement table_center_is_empty
+    pass
+
+
+def factory_displays_are_empty(tiles: Tiles) -> bool:
+    """Return True is all factory displays are empty"""
+    # TODO:  Implement factory_displays_are_empty
+    pass
