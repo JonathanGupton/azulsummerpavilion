@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from azulsummerpavilion.library.actions import DistributeTiles
+from azulsummerpavilion.library.actions import MakePlayerTileSelection
 from azulsummerpavilion.library.actions import MakeTileSelection
 from azulsummerpavilion.library.constants import Bag
 from azulsummerpavilion.library.logic import game_logic
@@ -38,9 +39,10 @@ class GameManager:
                     aq.appendleft(
                         DistributeTiles(tiles=tiles, source=source, target=target)
                     )
-                case MakeTileSelection(source=source):
-                    # TODO: This will be the player decision making logic
-                    pass
+                case MakePlayerTileSelection():
+                    curr = game.state.current_player
+                    tile_selection = game.players[curr].get_action(game.state)
+                    aq.append(tile_selection)
                 case _:
                     aq.appendleft(action)
                     game.state, game.actions, game.events = game_logic(
