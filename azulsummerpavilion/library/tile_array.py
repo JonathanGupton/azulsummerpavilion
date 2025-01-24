@@ -1,3 +1,4 @@
+from typing import Optional
 from typing import Sequence
 
 from azulsummerpavilion.library.constants import TileColor
@@ -30,3 +31,14 @@ class TileArray(tuple):
     def to_dict(self) -> dict[TileColor, int]:
         """Returns a dict of {TileColor: Counts} for the TileArray"""
         return {TileColor(i): count for i, count in enumerate(self) if count > 0}
+
+
+def tile_color(tiles: TileArray) -> Optional[TileColor]:
+    """
+    Get the tile color associated with the TileArray.  This is used when a user
+    selects a single tile to draw from the Factory Display or the Table Center.  This is
+    necessary when checking if the tile selected is the wild tile.
+    """
+    for i, v in enumerate(tiles):
+        if v != 0:
+            return TileColor(i)
