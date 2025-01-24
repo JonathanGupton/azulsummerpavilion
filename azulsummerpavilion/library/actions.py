@@ -42,6 +42,11 @@ class MakeTileSelection(Action):
     target: TileTarget
 
 
+@dataclass
+class MakePlayerTileSelection(Action):
+    pass
+
+
 @dataclass()
 class DistributeTiles(Action):
     """Command to distribute tiles"""
@@ -91,14 +96,6 @@ class PlayTileToStarAndScore(Action):
 
 
 @dataclass
-class PassAndEndPlayForPhase(Action):
-    """Command for ending a player's turns in a phase"""
-
-    player: int
-    saved_tiles: TileArray
-
-
-@dataclass
 class EndGame(Action):
     """Command to end and finalize the game"""
 
@@ -109,13 +106,6 @@ class UpdatePlayerScore(Action):
 
     player: int
     score: int
-
-
-@dataclass
-class CompleteInitialization(Action):
-    """Complete the initialization process and trigger the game start"""
-
-    pass
 
 
 @dataclass
@@ -134,4 +124,13 @@ class FillSupplySpaces(Action):
 
 @dataclass
 class FillFactoryDisplaySpaces(Action):
+    """Fill all factory display spaces"""
+
+    pass
+
+
+@dataclass
+class AdvancePhase(Action):
+    """Advance the game state to the next phase"""
+
     pass
