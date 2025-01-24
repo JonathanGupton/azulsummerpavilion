@@ -68,34 +68,6 @@ class Phase(Enum):
         return self._order[self.name] < self._order[other.name]
 
 
-class Color:
-    pass
-
-
-class Purple(Color):
-    pass
-
-
-class Green(Color):
-    pass
-
-
-class Orange(Color):
-    pass
-
-
-class Yellow(Color):
-    pass
-
-
-class Blue(Color):
-    pass
-
-
-class Red(Color):
-    pass
-
-
 class TileIndex(IntEnum):
     """Tile indices for Tile class"""
 
