@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
+from azulsummerpavilion.library.color import Color
 from azulsummerpavilion.library.constants import Bag
-from azulsummerpavilion.library.constants import Color
 from azulsummerpavilion.library.constants import Phase
 from azulsummerpavilion.library.constants import StarColor
 from azulsummerpavilion.library.constants import TileTarget
