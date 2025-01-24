@@ -14,6 +14,7 @@ class AzulSummerPavilionState:
     tiles: Tiles
     score: Score
     boards: list[Board]
+    current_player: Optional[int] = 0
     phase: Optional[Phase] = None
     round: Optional[int] = None
     wild_color: Optional[Color] = None
