@@ -47,6 +47,17 @@ class MakePlayerTileSelection(Action):
     pass
 
 
+@dataclass
+class PlayerTileIsSelected(Action):
+    """
+    Command when a player has selected a tile to draw and information
+    needs to be passed to the game logic for processing
+    """
+
+    color: Color
+    source: TileTarget
+
+
 @dataclass()
 class DistributeTiles(Action):
     """Command to distribute tiles"""

@@ -7,9 +7,11 @@ from azulsummerpavilion.library.actions import FillSupplySpaces
 from azulsummerpavilion.library.actions import MakePlayerTileSelection
 from azulsummerpavilion.library.actions import MakeTileSelection
 from azulsummerpavilion.library.actions import NewGame
+from azulsummerpavilion.library.actions import PlayerTileIsSelected
 from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import SetRoundAndWildColor
 from azulsummerpavilion.library.actions import UpdatePlayerScore
+from azulsummerpavilion.library.color import Purple
 from azulsummerpavilion.library.constants import Bag
 from azulsummerpavilion.library.constants import FACTORY_SPACE_DRAW
 from azulsummerpavilion.library.constants import FactoryDisplay
@@ -17,13 +19,13 @@ from azulsummerpavilion.library.constants import INITIAL_PLAYER_SCORE
 from azulsummerpavilion.library.constants import PLAYER_TO_DISPLAY_RATIO
 from azulsummerpavilion.library.constants import Phase
 from azulsummerpavilion.library.constants import PlayerReserve
-from azulsummerpavilion.library.constants import Purple
 from azulsummerpavilion.library.constants import SUPPLY_SPACE_COUNT
 from azulsummerpavilion.library.constants import Supply
 from azulsummerpavilion.library.events import GamePhaseSet
 from azulsummerpavilion.library.events import PlayerScoreUpdated
 from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.state import AzulSummerPavilionState as State
+from azulsummerpavilion.library.tile_array import TileArray
 from azulsummerpavilion.library.tiles import factory_displays_are_empty
 from azulsummerpavilion.library.tiles import table_center_is_empty
 
@@ -68,6 +70,15 @@ def game_logic(
                 )
             aq.append(DoPlayerTurn())
 
+        case PlayerTileIsSelected(
+            color=color, source=source
+        ) if state.phase == Phase.acquire_tile and isinstance(source, FactoryDisplay):
+            ta = TileArray.new()
+            if color == state.wild_color:
+                ta[color.tile_color] += 1
+            else:
+                pass
+
         case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
             target, Supply
         ):
@@ -78,12 +89,14 @@ def game_logic(
         case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
             target, FactoryDisplay
         ):
+            # TODO:  Implement distribution to Factory Display
             display_index = target.display_index
 
         case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
             target, PlayerReserve
-        ) and isinstance(source, FactoryDisplay):
-            # TODO: Implement draw to player reserve from factory display
+        ) and state.phase == Phase.acquire_tile:
+
+            # TODO:  Move tiles to player reserve, dump remaining tiles to table center
             pass
 
         case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
