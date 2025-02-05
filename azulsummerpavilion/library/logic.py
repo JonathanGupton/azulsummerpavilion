@@ -11,7 +11,7 @@ from azulsummerpavilion.library.actions import NewGame
 from azulsummerpavilion.library.actions import PlayerTileIsSelected
 from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import SetRoundAndWildColor
-from azulsummerpavilion.library.actions import SetStartPlayerToken
+from azulsummerpavilion.library.actions import SetStartPlayer
 from azulsummerpavilion.library.actions import UpdatePlayerScore
 from azulsummerpavilion.library.constants import FactoryDisplay
 from azulsummerpavilion.library.constants import Phase
@@ -81,7 +81,7 @@ def game_logic(
                     )
                 )
 
-        case SetStartPlayerToken(player=player):
+        case SetStartPlayer(player=player):
             handle_set_start_player(state, player, aq, eq)
 
         case DiscardFactoryDisplayToCenter(factory_display_index=display_index):
