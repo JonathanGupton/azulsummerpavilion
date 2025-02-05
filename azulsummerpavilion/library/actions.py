@@ -145,3 +145,20 @@ class AdvancePhase(Action):
     """Advance the game state to the next phase"""
 
     pass
+
+
+@dataclass
+class MoveTilesToPlayerHand(Action):
+    """Command to move tiles from a source to player's hand following wild tile rules"""
+
+    player: int
+    selected_color: Color
+    source: TileTarget
+    tiles: TileArray
+
+
+@dataclass
+class DiscardFactoryDisplayToCenter(Action):
+    """Command to discard remaining tiles from a factory display to the table center"""
+
+    factory_display_index: int

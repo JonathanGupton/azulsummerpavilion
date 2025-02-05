@@ -1,31 +1,36 @@
 from azulsummerpavilion.library.actions import Action
 from azulsummerpavilion.library.actions import AdvancePhase
+from azulsummerpavilion.library.actions import DiscardFactoryDisplayToCenter
 from azulsummerpavilion.library.actions import DistributeTiles
 from azulsummerpavilion.library.actions import DoPlayerTurn
 from azulsummerpavilion.library.actions import FillFactoryDisplaySpaces
 from azulsummerpavilion.library.actions import FillSupplySpaces
 from azulsummerpavilion.library.actions import MakePlayerTileSelection
-from azulsummerpavilion.library.actions import MakeTileSelection
+from azulsummerpavilion.library.actions import MoveTilesToPlayerHand
 from azulsummerpavilion.library.actions import NewGame
 from azulsummerpavilion.library.actions import PlayerTileIsSelected
 from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import SetRoundAndWildColor
 from azulsummerpavilion.library.actions import UpdatePlayerScore
-from azulsummerpavilion.library.color import Purple
-from azulsummerpavilion.library.constants import Bag
-from azulsummerpavilion.library.constants import FACTORY_SPACE_DRAW
 from azulsummerpavilion.library.constants import FactoryDisplay
-from azulsummerpavilion.library.constants import INITIAL_PLAYER_SCORE
-from azulsummerpavilion.library.constants import PLAYER_TO_DISPLAY_RATIO
 from azulsummerpavilion.library.constants import Phase
 from azulsummerpavilion.library.constants import PlayerReserve
-from azulsummerpavilion.library.constants import SUPPLY_SPACE_COUNT
 from azulsummerpavilion.library.constants import Supply
-from azulsummerpavilion.library.events import GamePhaseSet
 from azulsummerpavilion.library.events import PlayerScoreUpdated
+from azulsummerpavilion.library.logic_handlers import (
+    handle_discard_factory_display_to_center,
+)
+from azulsummerpavilion.library.logic_handlers import (
+    handle_fill_factory_display_spaces_and_enqueue_player_turn,
+)
+from azulsummerpavilion.library.logic_handlers import handle_fill_supply_spaces
+from azulsummerpavilion.library.logic_handlers import handle_move_tiles_to_player_hand
+from azulsummerpavilion.library.logic_handlers import handle_new_game
+from azulsummerpavilion.library.logic_handlers import handle_player_tile_selection
+from azulsummerpavilion.library.logic_handlers import handle_set_game_phase
+from azulsummerpavilion.library.logic_handlers import handle_set_round_and_wild_color
 from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.state import AzulSummerPavilionState as State
-from azulsummerpavilion.library.tile_array import TileArray
 from azulsummerpavilion.library.tiles import factory_displays_are_empty
 from azulsummerpavilion.library.tiles import table_center_is_empty
 
@@ -45,39 +50,37 @@ def game_logic(
     match action:
 
         case NewGame(number_of_players=number_of_players):
-            aq.append(SetGamePhase(Phase.acquire_tile))
-            aq.append(SetRoundAndWildColor(game_round=1, wild_color=Purple()))
-            for player in range(number_of_players):
-                aq.append(UpdatePlayerScore(player, INITIAL_PLAYER_SCORE))
-            aq.append(FillSupplySpaces())  # Handled by GM
+            handle_new_game(number_of_players, aq)
 
         case FillSupplySpaces():
-            aq.appendleft(
-                MakeTileSelection(
-                    tile_count=SUPPLY_SPACE_COUNT, source=Bag(), target=Supply()
-                )
-            )
+            handle_fill_supply_spaces(aq)
 
         case FillFactoryDisplaySpaces():
-            number_of_displays = PLAYER_TO_DISPLAY_RATIO[state.player_count]
-            for display_index in reversed(range(number_of_displays)):
-                aq.appendleft(
-                    MakeTileSelection(
-                        tile_count=FACTORY_SPACE_DRAW,
-                        source=Bag(),
-                        target=FactoryDisplay(display_index),
-                    )
-                )
-            aq.append(DoPlayerTurn())
+            player_count = state.player_count
+            handle_fill_factory_display_spaces_and_enqueue_player_turn(player_count, aq)
 
         case PlayerTileIsSelected(
             color=color, source=source
         ) if state.phase == Phase.acquire_tile and isinstance(source, FactoryDisplay):
-            ta = TileArray.new()
-            if color == state.wild_color:
-                ta[color.tile_color] += 1
-            else:
-                pass
+            handle_player_tile_selection(state, color, source, aq)
+
+        case MoveTilesToPlayerHand(
+            player=player, selected_color=color, source=source, tiles=tiles
+        ):
+            handle_move_tiles_to_player_hand(
+                state, player, color, source, tiles, aq, eq
+            )
+
+            # If source was factory display, queue up the discard action
+            if isinstance(source, FactoryDisplay):
+                aq.append(
+                    DiscardFactoryDisplayToCenter(
+                        factory_display_index=source.display_index
+                    )
+                )
+
+        case DiscardFactoryDisplayToCenter(factory_display_index=display_index):
+            handle_discard_factory_display_to_center(state, display_index, aq, eq)
 
         case DistributeTiles(tiles=tiles, source=source, target=target) if isinstance(
             target, Supply
@@ -116,12 +119,10 @@ def game_logic(
             )
 
         case SetGamePhase(phase=phase):
-            state.phase = phase
-            eq.append(GamePhaseSet(phase))
+            handle_set_game_phase(state, phase, eq)
 
         case SetRoundAndWildColor(game_round=game_round, wild_color=wild_color):
-            state.round = game_round
-            state.wild_color = wild_color
+            handle_set_round_and_wild_color(state, round, wild_color)
 
         case DoPlayerTurn() if all(
             (
