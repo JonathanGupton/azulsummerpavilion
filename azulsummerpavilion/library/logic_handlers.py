@@ -114,6 +114,19 @@ def handle_player_tile_selection(
     )
 
 
+def handle_set_start_player(
+    state: AzulSummerPavilionState,
+    player: int,
+    aq: MessageQueue,
+    eq: MessageQueue,
+) -> None:
+    """Handle setting the current player"""
+    state.start_player = player  # Set start_player when it was None
+
+    # Apply the -5 point penalty for being first to take from center
+    aq.append(UpdatePlayerScore(player=player, score=-5))
+
+
 def handle_move_tiles_to_player_hand(
     state: AzulSummerPavilionState,
     player: int,
@@ -136,6 +149,15 @@ def handle_move_tiles_to_player_hand(
         state.tiles.move_tiles(
             source_index=source_index, destination_index=destination_index, tiles=tiles
         )
+
+        # If start_player is None and taking from table center,
+        # set current player as start_player and apply penalty
+        if state.start_player is None:
+            aq.append(
+                SetStartPlayer(
+                    player=player  # Use the current player as the start player
+                )
+            )
 
     # Queue next player's turn
     aq.append(DoPlayerTurn())

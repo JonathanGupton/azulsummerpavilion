@@ -84,8 +84,8 @@ class SetGamePhase(Action):
 
 
 @dataclass
-class AssignStartPlayerToken(Action):
-    """Assign the start player token to the player"""
+class SetStartPlayerToken(Action):
+    """Set the start player token to the player"""
 
     player: int
 
