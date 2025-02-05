@@ -19,6 +19,7 @@ class AzulSummerPavilionState:
     round: Optional[int] = None
     wild_color: Optional[Color] = None
     initializing: Optional[bool] = None
+    start_player: Optional[int] = None
 
     @classmethod
     def new(cls, player_count: int) -> "AzulSummerPavilionState":
