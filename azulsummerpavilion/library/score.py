@@ -21,7 +21,10 @@ class Score(np.ndarray):
 
     def update(self, player: int, n_points: int):
         """Increase/decrease the player's score by n_points"""
-        self[player] += n_points
+        if n_points < 0 and abs(n_points) >= self[player]:
+            self[player] = 0
+        else:
+            self[player] = self[player] + np.int16(n_points)
 
     def player_score(self, player: int) -> int:
         return self[player]
