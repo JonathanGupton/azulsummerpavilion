@@ -4,6 +4,7 @@ from typing import Optional
 from azulsummerpavilion.library.board import Board
 from azulsummerpavilion.library.color import Color
 from azulsummerpavilion.library.constants import Phase
+from azulsummerpavilion.library.phasetwo import PhaseTwoPlayers
 from azulsummerpavilion.library.score import Score
 from azulsummerpavilion.library.tiles import Tiles
 
@@ -20,6 +21,7 @@ class AzulSummerPavilionState:
     wild_color: Optional[Color] = None
     initializing: Optional[bool] = None
     start_player: Optional[int] = None
+    phase_two_players: Optional[PhaseTwoPlayers] = None
 
     @classmethod
     def new(cls, player_count: int) -> "AzulSummerPavilionState":
@@ -27,10 +29,12 @@ class AzulSummerPavilionState:
         tiles = Tiles.new(player_count)
         score = Score(player_count)
         boards = [Board.new() for _ in range(player_count)]
+        phase_two_players = PhaseTwoPlayers(player_count)
         return cls(
             player_count=player_count,
             tiles=tiles,
             score=score,
             boards=boards,
             initializing=True,
+            phase_two_players=phase_two_players,
         )
