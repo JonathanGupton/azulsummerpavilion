@@ -1,5 +1,5 @@
+from azulsummerpavilion.library.components.state import AzulSummerPavilionState
 from azulsummerpavilion.library.queue import MessageQueue
-from azulsummerpavilion.library.state import AzulSummerPavilionState
 
 
 class StateManager:

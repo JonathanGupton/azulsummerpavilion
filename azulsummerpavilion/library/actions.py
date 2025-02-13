@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from azulsummerpavilion.library.color import Color
-from azulsummerpavilion.library.constants import Bag
-from azulsummerpavilion.library.constants import Phase
-from azulsummerpavilion.library.constants import StarColor
-from azulsummerpavilion.library.constants import TileTarget
-from azulsummerpavilion.library.tile_array import TileArray
+from azulsummerpavilion.library.components.color import Color
+from azulsummerpavilion.library.components.constants import Bag
+from azulsummerpavilion.library.components.constants import Phase
+from azulsummerpavilion.library.components.constants import StarColor
+from azulsummerpavilion.library.components.constants import TileTarget
+from azulsummerpavilion.library.components.tile_array import TileArray
 
 
 class Message:

@@ -13,10 +13,13 @@ from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import SetRoundAndWildColor
 from azulsummerpavilion.library.actions import SetStartPlayer
 from azulsummerpavilion.library.actions import UpdatePlayerScore
-from azulsummerpavilion.library.constants import FactoryDisplay
-from azulsummerpavilion.library.constants import Phase
-from azulsummerpavilion.library.constants import PlayerReserve
-from azulsummerpavilion.library.constants import Supply
+from azulsummerpavilion.library.components.constants import FactoryDisplay
+from azulsummerpavilion.library.components.constants import Phase
+from azulsummerpavilion.library.components.constants import PlayerReserve
+from azulsummerpavilion.library.components.constants import Supply
+from azulsummerpavilion.library.components.state import AzulSummerPavilionState as State
+from azulsummerpavilion.library.components.tiles import factory_displays_are_empty
+from azulsummerpavilion.library.components.tiles import table_center_is_empty
 from azulsummerpavilion.library.events import PlayerScoreUpdated
 from azulsummerpavilion.library.logic_handlers import (
     handle_discard_factory_display_to_center,
@@ -32,9 +35,6 @@ from azulsummerpavilion.library.logic_handlers import handle_set_game_phase
 from azulsummerpavilion.library.logic_handlers import handle_set_round_and_wild_color
 from azulsummerpavilion.library.logic_handlers import handle_set_start_player
 from azulsummerpavilion.library.queue import MessageQueue
-from azulsummerpavilion.library.state import AzulSummerPavilionState as State
-from azulsummerpavilion.library.tiles import factory_displays_are_empty
-from azulsummerpavilion.library.tiles import table_center_is_empty
 
 
 def game_logic(

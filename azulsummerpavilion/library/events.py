@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from azulsummerpavilion.library.actions import Message
-from azulsummerpavilion.library.constants import Phase
-from azulsummerpavilion.library.state import AzulSummerPavilionState as State
+from azulsummerpavilion.library.components.constants import Phase
+from azulsummerpavilion.library.components.state import AzulSummerPavilionState as State
 
 
 class Event(Message):

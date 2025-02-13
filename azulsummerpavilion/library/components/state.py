@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from azulsummerpavilion.library.board import Board
-from azulsummerpavilion.library.color import Color
-from azulsummerpavilion.library.constants import Phase
-from azulsummerpavilion.library.phasetwo import PhaseTwoPlayers
-from azulsummerpavilion.library.score import Score
-from azulsummerpavilion.library.tiles import Tiles
+from azulsummerpavilion.library.components.board import Board
+from azulsummerpavilion.library.components.color import Color
+from azulsummerpavilion.library.components.constants import Phase
+from azulsummerpavilion.library.components.phasetwo import PhaseTwoPlayers
+from azulsummerpavilion.library.components.score import Score
+from azulsummerpavilion.library.components.tiles import Tiles
 
 
 @dataclass

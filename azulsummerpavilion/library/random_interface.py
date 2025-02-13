@@ -7,8 +7,8 @@ from typing import Sequence
 
 import numpy as np
 
-from azulsummerpavilion.library.tiles import Tiles
-from azulsummerpavilion.library.tile_array import TileArray
+from azulsummerpavilion.library.components.tile_array import TileArray
+from azulsummerpavilion.library.components.tiles import Tiles
 
 
 class RandomInterface(ABC):

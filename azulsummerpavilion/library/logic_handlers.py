@@ -6,21 +6,21 @@ from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import SetRoundAndWildColor
 from azulsummerpavilion.library.actions import SetStartPlayer
 from azulsummerpavilion.library.actions import UpdatePlayerScore
-from azulsummerpavilion.library.color import Color
-from azulsummerpavilion.library.color import Purple
-from azulsummerpavilion.library.constants import Bag
-from azulsummerpavilion.library.constants import FACTORY_SPACE_DRAW
-from azulsummerpavilion.library.constants import FactoryDisplay
-from azulsummerpavilion.library.constants import INITIAL_PLAYER_SCORE
-from azulsummerpavilion.library.constants import PLAYER_TO_DISPLAY_RATIO
-from azulsummerpavilion.library.constants import Phase
-from azulsummerpavilion.library.constants import SUPPLY_SPACE_COUNT
-from azulsummerpavilion.library.constants import Supply
-from azulsummerpavilion.library.constants import TileTarget
+from azulsummerpavilion.library.components.color import Color
+from azulsummerpavilion.library.components.color import Purple
+from azulsummerpavilion.library.components.constants import Bag
+from azulsummerpavilion.library.components.constants import FACTORY_SPACE_DRAW
+from azulsummerpavilion.library.components.constants import FactoryDisplay
+from azulsummerpavilion.library.components.constants import INITIAL_PLAYER_SCORE
+from azulsummerpavilion.library.components.constants import PLAYER_TO_DISPLAY_RATIO
+from azulsummerpavilion.library.components.constants import Phase
+from azulsummerpavilion.library.components.constants import SUPPLY_SPACE_COUNT
+from azulsummerpavilion.library.components.constants import Supply
+from azulsummerpavilion.library.components.constants import TileTarget
+from azulsummerpavilion.library.components.state import AzulSummerPavilionState
+from azulsummerpavilion.library.components.tile_array import TileArray
 from azulsummerpavilion.library.events import GamePhaseSet
 from azulsummerpavilion.library.queue import MessageQueue
-from azulsummerpavilion.library.state import AzulSummerPavilionState
-from azulsummerpavilion.library.tile_array import TileArray
 
 
 def handle_new_game(number_of_players: int, aq: MessageQueue) -> None:
