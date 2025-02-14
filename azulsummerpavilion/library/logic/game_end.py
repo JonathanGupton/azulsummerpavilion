@@ -3,5 +3,5 @@ from azulsummerpavilion.library.components.state import AzulSummerPavilionState 
 from azulsummerpavilion.library.queue import MessageQueue
 
 
-def phase_two(action: Action, state: State | None, aq: MessageQueue, eq: MessageQueue):
+def game_end(action: Action, state: State | None, aq: MessageQueue, eq: MessageQueue):
     pass
