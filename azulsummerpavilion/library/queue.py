@@ -23,6 +23,14 @@ class MessageQueue(ABC):
         pass
 
     @abstractmethod
+    def __len__(self):
+        pass
+
+    @abstractmethod
+    def __iter__(self):
+        pass
+
+    @abstractmethod
     def append(self, obj: Message) -> None:
         pass
 
@@ -59,6 +67,12 @@ class MessageDequeue(MessageQueue):
 
     def __str__(self):
         return str(self.queue)
+
+    def __len__(self):
+        return len(self.queue)
+
+    def __iter__(self):
+        return iter(self.queue)
 
     def append(self, obj: Message) -> None:
         self.queue.append(obj)
