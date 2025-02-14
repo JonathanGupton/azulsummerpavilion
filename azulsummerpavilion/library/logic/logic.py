@@ -21,19 +21,19 @@ from azulsummerpavilion.library.components.state import AzulSummerPavilionState 
 from azulsummerpavilion.library.components.tiles import factory_displays_are_empty
 from azulsummerpavilion.library.components.tiles import table_center_is_empty
 from azulsummerpavilion.library.events import PlayerScoreUpdated
-from azulsummerpavilion.library.logic_handlers import (
+from azulsummerpavilion.library.logic.logic_handlers import (
     handle_discard_factory_display_to_center,
 )
-from azulsummerpavilion.library.logic_handlers import (
+from azulsummerpavilion.library.logic.logic_handlers import (
     handle_fill_factory_display_spaces_and_enqueue_player_turn,
 )
-from azulsummerpavilion.library.logic_handlers import handle_fill_supply_spaces
-from azulsummerpavilion.library.logic_handlers import handle_move_tiles_to_player_hand
-from azulsummerpavilion.library.logic_handlers import handle_new_game
-from azulsummerpavilion.library.logic_handlers import handle_player_tile_selection
-from azulsummerpavilion.library.logic_handlers import handle_set_game_phase
-from azulsummerpavilion.library.logic_handlers import handle_set_round_and_wild_color
-from azulsummerpavilion.library.logic_handlers import handle_set_start_player
+from azulsummerpavilion.library.logic.logic_handlers import handle_fill_supply_spaces
+from azulsummerpavilion.library.logic.logic_handlers import handle_move_tiles_to_player_hand
+from azulsummerpavilion.library.logic.logic_handlers import handle_new_game
+from azulsummerpavilion.library.logic.logic_handlers import handle_player_tile_selection
+from azulsummerpavilion.library.logic.logic_handlers import handle_set_game_phase
+from azulsummerpavilion.library.logic.logic_handlers import handle_set_round_and_wild_color
+from azulsummerpavilion.library.logic.logic_handlers import handle_set_start_player
 from azulsummerpavilion.library.queue import MessageQueue
 
 

@@ -6,7 +6,7 @@ from azulsummerpavilion.library.actions import MakePlayerTileSelection
 from azulsummerpavilion.library.actions import MakeTileSelection
 from azulsummerpavilion.library.components.constants import Bag
 from azulsummerpavilion.library.components.state import AzulSummerPavilionState as State
-from azulsummerpavilion.library.logic import game_logic
+from azulsummerpavilion.library.logic.logic import game_logic
 from azulsummerpavilion.library.player_interface import PlayerInterface
 from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.random_interface import RandomInterface
