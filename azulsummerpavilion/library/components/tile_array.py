@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from azulsummerpavilion.library.constants import TileColor
+from azulsummerpavilion.library.components.constants import TileColor
 
 
 class InvalidTileArrayLengthError(Exception):

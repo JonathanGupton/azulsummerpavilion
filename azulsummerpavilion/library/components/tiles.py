@@ -6,10 +6,10 @@ from typing import Union
 
 import numpy as np
 
-from azulsummerpavilion.library.constants import PLAYER_TO_DISPLAY_RATIO
-from azulsummerpavilion.library.constants import StarColor
-from azulsummerpavilion.library.constants import TileColor
-from azulsummerpavilion.library.constants import TileIndex
+from azulsummerpavilion.library.components.constants import PLAYER_TO_DISPLAY_RATIO
+from azulsummerpavilion.library.components.constants import StarColor
+from azulsummerpavilion.library.components.constants import TileColor
+from azulsummerpavilion.library.components.constants import TileIndex
 
 # Referenced in the Tiles.validate_tiles() method
 # This is created here to avoid instantiating a new object every time the Tile

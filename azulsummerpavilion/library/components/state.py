@@ -16,6 +16,8 @@ class AzulSummerPavilionState:
     score: Score
     boards: list[Board]
     current_player: Optional[int] = 0
+    game_end = False
+    final = False
     phase: Optional[Phase] = None
     round: Optional[int] = None
     wild_color: Optional[Color] = None

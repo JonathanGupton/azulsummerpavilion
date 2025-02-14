@@ -6,7 +6,7 @@ from collections import deque
 
 import numpy as np
 
-from azulsummerpavilion.library.constants import StarColor
+from azulsummerpavilion.library.components.constants import StarColor
 
 
 class InvalidTilePlacement(Exception):
