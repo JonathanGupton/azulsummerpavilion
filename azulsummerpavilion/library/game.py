@@ -4,10 +4,12 @@ from typing import Optional
 from azulsummerpavilion.library.actions import DistributeTiles
 from azulsummerpavilion.library.actions import MakePlayerTileSelection
 from azulsummerpavilion.library.actions import MakeTileSelection
+from azulsummerpavilion.library.actions import NewGame
 from azulsummerpavilion.library.components.constants import Bag
 from azulsummerpavilion.library.components.state import AzulSummerPavilionState as State
 from azulsummerpavilion.library.logic.logic import game_logic
 from azulsummerpavilion.library.player_interface import PlayerInterface
+from azulsummerpavilion.library.queue import MessageDequeue
 from azulsummerpavilion.library.queue import MessageQueue
 from azulsummerpavilion.library.random_interface import RandomInterface
 
@@ -19,6 +21,17 @@ class AzulSummerPavilionGame:
     events: MessageQueue
     actions: MessageQueue
     state: Optional[State] = None
+
+    @classmethod
+    def new_game(
+        cls, players: tuple[PlayerInterface], random: RandomInterface
+    ) -> "AzulSummerPavilionGame":
+        """Factory method to create a new game instance."""
+        actions = MessageDequeue()
+        events = MessageDequeue()
+        # Queue the NewGame action to trigger state initialization
+        actions.append(NewGame(len(players)))
+        return cls(players=players, random=random, events=events, actions=actions)
 
 
 class GameManager:
