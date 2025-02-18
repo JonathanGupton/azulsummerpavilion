@@ -16,7 +16,7 @@ from azulsummerpavilion.library.random_interface import RandomInterface
 
 @dataclass
 class AzulSummerPavilionGame:
-    players: tuple[PlayerInterface]
+    players: tuple[PlayerInterface,...]
     random: RandomInterface
     events: MessageQueue
     actions: MessageQueue
@@ -24,7 +24,7 @@ class AzulSummerPavilionGame:
 
     @classmethod
     def new_game(
-        cls, players: tuple[PlayerInterface], random: RandomInterface
+        cls, players: tuple[PlayerInterface,...], random: RandomInterface
     ) -> "AzulSummerPavilionGame":
         """Factory method to create a new game instance."""
         actions = MessageDequeue()
