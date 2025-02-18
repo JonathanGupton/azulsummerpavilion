@@ -1,17 +1,12 @@
 from azulsummerpavilion.library.actions import DoPlayerTurn
-from azulsummerpavilion.library.actions import FillSupplySpaces
 from azulsummerpavilion.library.actions import MakeTileSelection
 from azulsummerpavilion.library.actions import MoveTilesToPlayerHand
-from azulsummerpavilion.library.actions import SetGamePhase
-from azulsummerpavilion.library.actions import SetRoundAndWildColor
 from azulsummerpavilion.library.actions import SetStartPlayer
 from azulsummerpavilion.library.actions import UpdatePlayerScore
 from azulsummerpavilion.library.components.color import Color
-from azulsummerpavilion.library.components.color import Purple
 from azulsummerpavilion.library.components.constants import Bag
 from azulsummerpavilion.library.components.constants import FACTORY_SPACE_DRAW
 from azulsummerpavilion.library.components.constants import FactoryDisplay
-from azulsummerpavilion.library.components.constants import INITIAL_PLAYER_SCORE
 from azulsummerpavilion.library.components.constants import PLAYER_TO_DISPLAY_RATIO
 from azulsummerpavilion.library.components.constants import Phase
 from azulsummerpavilion.library.components.constants import SUPPLY_SPACE_COUNT
@@ -21,19 +16,6 @@ from azulsummerpavilion.library.components.state import AzulSummerPavilionState
 from azulsummerpavilion.library.components.tile_array import TileArray
 from azulsummerpavilion.library.events import GamePhaseSet
 from azulsummerpavilion.library.queue import MessageQueue
-
-
-def handle_new_game(number_of_players: int, aq: MessageQueue) -> None:
-    set_phase = SetGamePhase(Phase.acquire_tile)
-    aq.append(set_phase)
-
-    set_round_and_color = SetRoundAndWildColor(game_round=1, wild_color=Purple())
-    aq.append(set_round_and_color)
-
-    for player in range(number_of_players):
-        aq.append(UpdatePlayerScore(player, INITIAL_PLAYER_SCORE))
-
-    aq.append(FillSupplySpaces())  # Handled by GM
 
 
 def handle_fill_supply_spaces(aq: MessageQueue) -> None:
