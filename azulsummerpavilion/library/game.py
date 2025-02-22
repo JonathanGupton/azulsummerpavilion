@@ -3,10 +3,10 @@ from typing import Optional
 
 from azulsummerpavilion.library.actions import NewGame
 from azulsummerpavilion.library.components.state import AzulSummerPavilionState as State
-from azulsummerpavilion.library.player_interface import PlayerInterface
 from azulsummerpavilion.library.queue import MessageDequeue
 from azulsummerpavilion.library.queue import MessageQueue
-from azulsummerpavilion.library.random_interface import RandomInterface
+from library.agents.player_interface import PlayerInterface
+from library.agents.random_interface import RandomInterface
 from library.components.constants import PLAYER_TO_DISPLAY_RATIO
 
 
