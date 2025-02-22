@@ -5,7 +5,7 @@ from abc import ABC
 from abc import abstractmethod
 
 from azulsummerpavilion.library.actions import Action
-from azulsummerpavilion.library.player import Player
+from library.agents.player import Player
 
 
 class PlayerInterface(ABC):
