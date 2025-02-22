@@ -1,5 +1,7 @@
 from typing import Sequence
 
+import numpy as np
+
 from azulsummerpavilion.library.components.constants import TileColor
 
 
@@ -7,16 +9,44 @@ class InvalidTileArrayLengthError(Exception):
     pass
 
 
-class TileArray(tuple):
-    """Class to message the movement of tiles from one tile location to another"""
+class TileArray(np.ndarray):
+    """Class to message the movement of tiles from one tile location to another.
 
-    def __new__(cls, tiles: Sequence[int]):
-        if len(tiles) != 6:
+    A TileArray is a 1-dimensional array of length 6, representing the count of each tile color.
+    The array uses numpy's 'B' (unsigned char) dtype to ensure positive integers and memory efficiency.
+    """
+
+    def __new__(cls, input_array: Sequence[int] | np.ndarray):
+        # Convert input to numpy array if it isn't already
+        obj = np.asarray(input_array, dtype="B").flatten()
+
+        # Validate length
+        if len(obj) != 6:
             raise InvalidTileArrayLengthError(
-                f"Invalid tile length of {len(tiles)}. Must be len of 6."
+                f"Invalid tile length of {len(obj)}. Must be len of 6."
             )
-        tile_array = super().__new__(cls, tiles)
-        return tile_array
+
+        # Create the ndarray instance of our type
+        obj = obj.view(cls)
+
+        return obj
+
+    def __array_finalize__(self, obj):
+        """Handle array creation through view casting or template creation"""
+        if obj is None:
+            return
+
+    def __ne__(self, other) -> bool:
+        """Implement inequality comparison"""
+        if not isinstance(other, (TileArray, np.ndarray)):
+            return NotImplemented
+        return not np.array_equal(self, other)
+
+    def __eq__(self, other) -> bool:
+        """Implement equality comparison"""
+        if not isinstance(other, (TileArray, np.ndarray)):
+            return NotImplemented
+        return np.array_equal(self, other)
 
     def __str__(self):
         tile_dict = self.to_dict()
@@ -32,6 +62,12 @@ class TileArray(tuple):
         return {TileColor(i): count for i, count in enumerate(self) if count > 0}
 
     @classmethod
-    def new(cls):
+    def new(cls) -> "TileArray":
         """Create an empty TileArray"""
-        return cls((0, 0, 0, 0, 0, 0))
+        return cls(np.zeros(6, dtype="B"))
+
+    def __eq__(self, other) -> bool:
+        """Implement equality comparison"""
+        if not isinstance(other, (TileArray, np.ndarray)):
+            return NotImplemented
+        return np.array_equal(self, other)
