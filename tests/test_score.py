@@ -2,7 +2,7 @@
 
 import pytest
 
-from azulsummerpavilion.library.score import Score
+from azulsummerpavilion.library.components.score import Score
 
 
 class TestScore:
