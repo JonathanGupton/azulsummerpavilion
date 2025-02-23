@@ -8,7 +8,11 @@ from typing import Sequence
 import numpy as np
 
 from azulsummerpavilion.library.components.tile_array import TileArray
-from azulsummerpavilion.library.components.tiles import Tiles
+
+
+def validate_draw(tiles: np.ndarray, draw_count: int) -> bool:
+    """Draws cannot be less than 0 or greater than the total available tiles"""
+    return 0 <= draw_count <= sum(tiles)
 
 
 class RandomInterface(ABC):
@@ -18,7 +22,7 @@ class RandomInterface(ABC):
     """
 
     @abstractmethod
-    def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
+    def draw(self, tiles: np.ndarray, draw_count: int) -> TileArray:
         """Given the current tile array, generate an n tile tile-array of tiles to draw"""
         pass
 
@@ -32,7 +36,7 @@ class DeterministicInterface(RandomInterface):
     def __init__(self, draws: Sequence[TileArray]):
         self.draws = deque(draws)
 
-    def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
+    def draw(self, tiles: np.ndarray, draw_count: int) -> TileArray:
         return self.draws.popleft()
 
     def enqueue_draw(self, draws: Sequence[TileArray]):
@@ -49,7 +53,7 @@ class SeededRandomInterface(RandomInterface):
         self.seed = seed
         self.rng: np.random.Generator = np.random.default_rng(seed=seed)
 
-    def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
+    def draw(self, tiles: np.ndarray, draw_count: int) -> TileArray:
         return TileArray(
             self.rng.multivariate_hypergeometric(tiles, draw_count).astype("B")
         )
@@ -64,9 +68,14 @@ class DefaultRandomInterface(RandomInterface):
 
     def __init__(self):
         self.rng: np.random.Generator = np.random.default_rng()
-        self.seed = self.rng.bit_generator.state["state"]["key"]
+        self.seed: int = self.rng.bit_generator.seed_seq.state["entropy"]
 
-    def draw(self, tiles: Tiles, draw_count: int) -> TileArray:
-        return TileArray(
-            self.rng.multivariate_hypergeometric(tiles, draw_count).astype("B")
+    def draw(self, tiles: np.ndarray, draw_count: int) -> TileArray:
+        drawn_tiles = self.rng.multivariate_hypergeometric(tiles, draw_count).astype(
+            "B"
         )
+        drawn_tile_array = TileArray(drawn_tiles.view(TileArray))
+        return drawn_tile_array
+
+    def get_seed(self):
+        return self.seed
