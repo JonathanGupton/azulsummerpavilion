@@ -29,7 +29,9 @@ def handle_new_game(number_of_players: int, aq: MessageQueue) -> None:
     aq.append(set_phase)
 
 
-def game_start(action: Action, state: State | None, aq: MessageQueue, eq: MessageQueue):
+def game_start(
+    action: Action, state: State | None, aq: MessageQueue, eq: MessageQueue
+) -> (State, MessageQueue, MessageQueue):
     match action:
         case NewGame(number_of_players=number_of_players):
             handle_new_game(number_of_players, aq)
@@ -39,3 +41,4 @@ def game_start(action: Action, state: State | None, aq: MessageQueue, eq: Messag
             logger.debug(
                 f"function {inspect.currentframe().f_code.co_name} received action {action} and did not reach a matching case"
             )
+    return state, aq, eq

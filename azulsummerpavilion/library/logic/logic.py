@@ -1,3 +1,7 @@
+import inspect
+
+from loguru import logger
+
 from azulsummerpavilion.library.actions import Action
 from azulsummerpavilion.library.actions import AdvancePhase
 from azulsummerpavilion.library.actions import DiscardFactoryDisplayToCenter
@@ -7,7 +11,6 @@ from azulsummerpavilion.library.actions import FillFactoryDisplaySpaces
 from azulsummerpavilion.library.actions import FillSupplySpaces
 from azulsummerpavilion.library.actions import MakePlayerTileSelection
 from azulsummerpavilion.library.actions import MoveTilesToPlayerHand
-from azulsummerpavilion.library.actions import NewGame
 from azulsummerpavilion.library.actions import PlayerTileIsSelected
 from azulsummerpavilion.library.actions import SetGamePhase
 from azulsummerpavilion.library.actions import SetRoundAndWildColor
@@ -21,6 +24,8 @@ from azulsummerpavilion.library.components.state import AzulSummerPavilionState 
 from azulsummerpavilion.library.components.tiles import factory_displays_are_empty
 from azulsummerpavilion.library.components.tiles import table_center_is_empty
 from azulsummerpavilion.library.events import PlayerScoreUpdated
+from azulsummerpavilion.library.logic.game_end import game_end
+from azulsummerpavilion.library.logic.game_start import game_start
 from azulsummerpavilion.library.logic.logic_handlers import (
     handle_discard_factory_display_to_center,
 )
@@ -28,13 +33,20 @@ from azulsummerpavilion.library.logic.logic_handlers import (
     handle_fill_factory_display_spaces_and_enqueue_player_turn,
 )
 from azulsummerpavilion.library.logic.logic_handlers import handle_fill_supply_spaces
-from azulsummerpavilion.library.logic.logic_handlers import handle_move_tiles_to_player_hand
-from azulsummerpavilion.library.logic.logic_handlers import handle_new_game
+from azulsummerpavilion.library.logic.logic_handlers import (
+    handle_move_tiles_to_player_hand,
+)
 from azulsummerpavilion.library.logic.logic_handlers import handle_player_tile_selection
 from azulsummerpavilion.library.logic.logic_handlers import handle_set_game_phase
-from azulsummerpavilion.library.logic.logic_handlers import handle_set_round_and_wild_color
+from azulsummerpavilion.library.logic.logic_handlers import (
+    handle_set_round_and_wild_color,
+)
 from azulsummerpavilion.library.logic.logic_handlers import handle_set_start_player
+from azulsummerpavilion.library.logic.phase_one import phase_one
+from azulsummerpavilion.library.logic.phase_three import phase_three
+from azulsummerpavilion.library.logic.phase_two import phase_two
 from azulsummerpavilion.library.queue import MessageQueue
+from library.actions import NewGame
 
 
 def game_logic(
@@ -49,13 +61,40 @@ def game_logic(
     The Game class is responsible for processing and emitting actions that require user (player) input or random inputs
     such as selecting tiles to be drawn.
     """
-    match action:
 
-        case NewGame(number_of_players=number_of_players):
-            handle_new_game(number_of_players, aq)
+    if isinstance(action, NewGame) and state is None:
+        state = State.new(player_count=action.number_of_players)
+
+    match state.phase:
+        # Generic actions
+        case SetRoundAndWildColor(game_round=game_round, wild_color=wild_color):
+            handle_set_round_and_wild_color(state, game_round, wild_color)
 
         case FillSupplySpaces():
             handle_fill_supply_spaces(aq)
+
+        # Phase specific actions
+        case Phase.acquire_tile:
+            phase_one(action, state, aq, eq)
+
+        case Phase.play_tiles:
+            phase_two(action, state, aq, eq)
+
+        case Phase.prepare_next_round:
+            phase_three(action, state, aq, eq)
+
+        case None if state.game_end is True:
+            game_end(action, state, aq, eq)
+
+        case None:
+            game_start(action, state, aq, eq)
+
+        case _:
+            logger.debug(
+                f"function {inspect.currentframe().f_code.co_name} received action {action} and did not reach a matching case"
+            )
+
+    match action:
 
         case FillFactoryDisplaySpaces():
             player_count = state.player_count
@@ -125,9 +164,6 @@ def game_logic(
 
         case SetGamePhase(phase=phase):
             handle_set_game_phase(state, phase, eq)
-
-        case SetRoundAndWildColor(game_round=game_round, wild_color=wild_color):
-            handle_set_round_and_wild_color(state, round, wild_color)
 
         case DoPlayerTurn() if all(
             (
